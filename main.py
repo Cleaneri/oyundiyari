@@ -1,18 +1,48 @@
-import tkinter as tk
+from kivy.app import App
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.label import Label
+from kivy.uix.button import Button
+from kivy.core.window import Window
 
-# Ana pencereyi oluşturuyoruz
-pencere = tk.Tk()
-pencere.title("Uygulama")
-pencere.geometry("300x150")  # Pencere boyutu (Genişlik x Yükseklik)
+class UygulamaApp(App):
+    def build(self):
+        # Pencere başlığını ayarlıyoruz
+        self.title = "Uygulama"
+        
+        # Pencere boyutunu ayarlıyoruz (Android'de tam ekran olur)
+        Window.size = (300, 150)
+        
+        # Elemanları üstten aşağıya doğru dizmek için dikey (vertical) bir düzen oluşturuyoruz
+        duzen = BoxLayout(orientation='vertical', padding=20, spacing=10)
+        
+        # Ekrana yazılacak metin (Etiket)
+        yazi = Label(
+            text="Yakında birçok oyun olacak.", 
+            font_name="Arial" if Window.platform == "win" else "Roboto", 
+            font_size='16sp'
+        )
+        duzen.add_widget(yazi)
+        
+        # Kapatma butonu (command yerine on_press kullanılır)
+        kapat_butonu = Button(
+            text="Kapat", 
+            background_normal='', 
+            background_color=(1, 0, 0, 1),  # Kırmızı renk (RGBA formatında)
+            color=(1, 1, 1, 1),            # Beyaz yazı
+            font_size='14sp', 
+            bold=True,
+            size_hint=(None, None),
+            size=(100, 40),
+            pos_hint={'center_x': 0.5}      # Butonu ortalar
+        )
+        kapat_butonu.bind(on_press=self.kapat)
+        duzen.add_widget(kapat_butonu)
+        
+        return duzen
 
-# Ekrana yazılacak metin (Etiket)
-yazi = tk.Label(pencere, text="Yakında birçok oyun olacak.", font=("Arial", 12))
-yazi.pack(pady=20)  # pady: Üstten ve alttan bırakılacak boşluk
+    def kapat(self, instance):
+        # Uygulamayı kapatır
+        App.get_running_app().stop()
 
-# Kapatma butonu
-# command=pencere.destroy ifadesi butona basılınca pencereyi kapatır
-kapat_butonu = tk.Button(pencere, text="Kapat", command=pencere.destroy, bg="red", fg="white", font=("Arial", 10, "bold"))
-kapat_butonu.pack(pady=10)
-
-# Pencerenin ekranda kalmasını sağlayan döngü
-pencere.mainloop()
+if __name__ == '__main__':
+    UygulamaApp().run()
